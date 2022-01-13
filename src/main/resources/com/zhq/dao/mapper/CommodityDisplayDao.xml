@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhq.dao.shop.CommodityDisplayDao">
+
+<!-- 配置了一个sql片段 -->
+	<sql id="CommodityColumns">
+		id,product_id,comname,place,material,brand,weight,unit,display,market,intime,examine,iscnable,picture
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="Commodity" id="CommodityMap">
+		<id property="id" column="id" />
+		<result property="productID" column="product_id" />
+		<result property="comname" column="comname" />
+		<result property="place" column="place" />
+		<result property="material" column="material" />
+		<result property="brand" column="brand" />
+		<result property="weight" column="weight" />
+		<result property="unit" column="unit" />
+		<result property="display" column="display" />
+		<result property="market" column="market" />
+		<result property="intime" column="intime" />
+		<result property="examine" column="examine" />
+		<result property="iscnable" column="iscnable" />
+		<result property="picture" column="picture" />
+	</resultMap>
+	
+	<select id="findCom" resultMap="CommodityMap" parameterType="Commodity">
+		select 
+		<include refid="CommodityColumns" />
+		from t_product_admin
+		<where>
+			<!-- <if test="id != null and id !=''">
+				and id = #{id}
+			</if> -->
+			<if test="productID != null and productID !=''">
+				and product_id = #{productID}
+			</if>
+			<if test="comname != null and comname !=''">
+				<!-- 拼出%%形式 -->
+				<bind name="likename" value="'%'+name+'%'" />
+				and comname like #{likename}
+			</if>
+			
+		</where>
+		order by id
+	</select>
+	
+	<!-- 根据编号查询一个 -->
+	<select id="findById" resultMap="CommodityMap"
+		parameterType="java.util.Map">
+		select
+		<include refid="CommodityColumns" />
+		from t_product_admin where id = #{id}
+	</select>
+	
+	
+	
+	<sql id="ShopcartColumns">
+		id,pro_id,shopname,username,picture,market,display
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="ShopCart" id="ShopcartMap">
+		<id property="id" column="id" />
+		<result property="proId" column="pro_id" />
+		<result property="shopname" column="shopname" />
+		<result property="username" column="username" />
+		<result property="picture" column="picture" />
+		<result property="market" column="market" />
+		<result property="display" column="display" />
+	</resultMap>
+	
+	<!-- 查护找购物车信息 -->
+	<select id="readcart" resultMap="ShopcartMap" parameterType="ShopCart">
+		select 
+		<include refid="ShopcartColumns" />
+		from t_shop_cart where username = #{username}
+		<!-- <where>
+			<if test="id != null and id !=''">
+				and id = #{id}
+			</if>
+			<if test="proId != null and proId !=''">
+				and pro_id = #{proId}
+			</if>
+			<if test="username != null and username !=''">
+				拼出%%形式
+				<bind name="likename" value="'%'+name+'%'" />
+				and username like #{likename}
+			</if>
+			
+		</where>
+		order by id -->
+	</select>
+	
+	
+
+	<!-- 添加购物车商品 -->
+	<insert id="savecart" parameterType="ShopCart">
+		insert into t_shop_cart (pro_id,shopname,username,picture,market,display)
+		values(
+		#{proId},
+		#{shopname},
+		#{username},
+		#{picture},
+		#{market},
+		#{display}
+		)
+	</insert>
+	
+	<!-- 删除购物车商品 -->
+	<delete id="deleteById">
+		delete from t_shop_cart
+		<where>
+			id = #{id}
+		</where>
+	</delete>
+	
+	<!-- 收货地址片段 -->
+	<sql id="AddressColumns">
+		id,user_id,username,phone,province,city,county,xiang
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="Address" id="AddressMap">
+		<id property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="username" column="username" />
+		<result property="phone" column="phone" />
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="county" column="county" />
+		<result property="xiang" column="xiang" />
+	</resultMap>
+	
+	<!-- 查出收货地址 -->
+	<select id="readaddress" resultMap="AddressMap" parameterType="Address">
+		select 
+		<include refid="AddressColumns" />
+		from t_address_user order by id
+	</select>
+	
+	<!-- 添加收货地址 -->
+	<insert id="saveaddress" parameterType="Address">
+		insert into t_address_user (username,phone,province,city,county,xiang)
+		values(
+		#{username},
+		#{phone},
+		#{province},
+		#{city},
+		#{county},
+		#{xiang}
+		)
+	</insert>
+	
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhq.dao.backstage.CommodityDao">
+
+<!-- 配置了一个sql片段 -->
+	<sql id="CommodityColumns">
+		id,product_id,comname,place,material,brand,weight,unit,display,market,intime,examine,iscnable,picture
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="Commodity" id="CommodityMap">
+		<id property="id" column="id" />
+		<result property="productID" column="product_id" />
+		<result property="comname" column="comname" />
+		<result property="place" column="place" />
+		<result property="material" column="material" />
+		<result property="brand" column="brand" />
+		<result property="weight" column="weight" />
+		<result property="unit" column="unit" />
+		<result property="display" column="display" />
+		<result property="market" column="market" />
+		<result property="intime" column="intime" />
+		<result property="examine" column="examine" />
+		<result property="iscnable" column="iscnable" />
+		<result property="picture" column="picture" />
+	</resultMap>
+	
+	<select id="findAll" resultMap="CommodityMap" parameterType="Commodity">
+		select 
+		<include refid="CommodityColumns" />
+		from t_product_admin
+		<where>
+			<!-- <if test="id != null and id !=''">
+				and id = #{id}
+			</if> -->
+			<if test="productID != null and productID !=''">
+				and product_id = #{productID}
+			</if>
+			<if test="comname != null and comname !=''">
+				<!-- 拼出%%形式 -->
+				<bind name="likename" value="'%'+comname+'%'" />
+				and comname like #{likename}
+			</if>
+			
+		</where>
+		order by id
+	</select>
+	
+	<!-- 添加数据 -->
+	<insert id="save" parameterType="Commodity">
+		insert into t_product_admin (product_id,comname,place,material,brand,display,market,picture)
+		values(
+		#{productID},
+		#{comname},
+		#{place},
+		#{material},
+		#{brand},
+		#{display},
+		#{market},
+		#{picture}
+		)
+	</insert>
+	
+	<!-- 删除数据 -->
+	<delete id="deleteByIds">
+		delete from t_product_admin
+		<where>
+			id in
+			<foreach collection="ids" item="id" separator="," open="("
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</delete>
+	
+	<!-- 根据编号查询一个 -->
+	<select id="findById" resultMap="CommodityMap"
+		parameterType="java.util.Map">
+		select
+		<include refid="CommodityColumns" />
+		from t_product_admin where id = #{id}
+	</select>
+	<!-- 根据Id修改信息 -->
+	<update id="update" parameterType="Integer">
+		update t_product_admin
+		<set>
+			product_id = #{productID},
+			comname = #{comname},
+			place = #{place},
+			material =#{material},
+			brand = #{brand},
+			weight = #{weight},
+			unit = #{unit}, 
+			display = #{display},
+			market = #{market},
+			picture=#{picture}
+		</set>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	
+</mapper>

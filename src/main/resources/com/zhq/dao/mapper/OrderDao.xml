@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhq.dao.shop.OrderDao">
+
+<!-- 配置了一个sql片段 -->
+	
+	<sql id="ShopCartColumns">
+		id,pro_id,shopname,username,picture,market,display
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="ShopCart" id="ShopCartMap">
+		<id property="id" column="id" />
+		<result property="proId" column="pro_id" />
+		<result property="shopname" column="shopname" />
+		<result property="username" column="username" />
+		<result property="picture" column="picture" />
+		<result property="market" column="market" />
+		<result property="display" column="display" />
+	</resultMap>
+	
+	<!-- 查护找购物车商品信息 -->
+	<select id="findByproId" resultMap="ShopCartMap" parameterType="ShopCart">
+		select 
+		<include refid="ShopCartColumns" />
+		from t_shop_cart where pro_id = #{proId}
+		
+	</select>
+	
+	
+	
+	<sql id="OrderDetailsColumns">
+		id,pro_id,order_id,price,num,picture,shopname,zongjia
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="OrderDetails" id="OrderDetailsMap">
+		<id property="id" column="id" />
+		<result property="proId" column="pro_id" />
+		<result property="orderId" column="order_id" />
+		<result property="price" column="price" />
+		<result property="picture" column="picture" />
+		<result property="num" column="num" />
+		<result property="shopname" column="shopname" />
+		<result property="zongjia" column="zongjia" />
+	</resultMap>
+	
+	<!-- 根据订单号查订单商品信息 -->
+	<select id="findOrderDetails" resultMap="OrderDetailsMap" parameterType="OrderDetails">
+		select 
+		<include refid="OrderDetailsColumns" />
+		from t_order_details where order_id = #{orderId}
+		
+	</select>
+	
+
+	<!-- 保存详细商品信息 -->
+	 <insert id="saveOrderdetails" parameterType="OrderDetails">
+		insert into t_order_details (pro_id,order_id,price,num,picture,shopname,zongjia)
+		values(
+		#{proId},
+		#{orderId},
+		#{price},
+		#{num},
+		#{picture},
+		#{shopname},
+		#{zongjia}
+		
+		)
+	</insert> 
+	
+	
+	<sql id="OrderColumns">
+		id,username,order_id,address,price,time,phone
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="Order" id="OrderMap">
+		<id property="id" column="id" />
+		<result property="orderId" column="order_id" />
+		<result property="address" column="address" />
+		<result property="username" column="username" />
+		<result property="price" column="price" />
+		<result property="time" column="time" />
+		<result property="phone" column="phone" />
+	</resultMap>
+	
+	<!-- 根据订单号查订单商品信息 -->
+	<select id="findOrder" resultMap="OrderMap" parameterType="Order">
+		select 
+		<include refid="OrderColumns" />
+		from t_order_shop where order_id = #{orderId}
+		
+	</select>
+	
+	<!-- 保存订单基础信息 -->
+	 <insert id="saveOrder" parameterType="Order">
+		insert into t_order_shop (username,order_id,address,price,time,phone)
+		values(
+		#{username},
+		#{orderId},
+		#{address},
+		#{price},
+		#{time},
+		#{phone}
+		)
+	</insert>
+	
+	
+	
+	
+	
+	
+</mapper>

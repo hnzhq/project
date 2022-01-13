@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhq.dao.backstage.AdminLoginDao">
+	<select id="findByName" resultType="com.zhq.model.backstage.Admin">
+		select adminname,password from t_security_admin where adminname = #{adminname}
+	</select>
+</mapper>
