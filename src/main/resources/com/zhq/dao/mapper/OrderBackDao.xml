@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhq.dao.backstage.OrderBackDao">
+
+	
+	<sql id="OrderDetailsColumns">
+		id,pro_id,order_id,price,num,picture,shopname,zongjia
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="OrderDetails" id="OrderDetailsMap">
+		<id property="id" column="id" />
+		<result property="proId" column="pro_id" />
+		<result property="orderId" column="order_id" />
+		<result property="price" column="price" />
+		<result property="picture" column="picture" />
+		<result property="num" column="num" />
+		<result property="shopname" column="shopname" />
+		<result property="zongjia" column="zongjia" />
+	</resultMap>
+	
+	<!-- 根据订单号查订单商品信息 -->
+	<select id="findOrderDetails" resultMap="OrderDetailsMap" parameterType="OrderDetails">
+		select 
+		<include refid="OrderDetailsColumns" />
+		from t_order_details where order_id = #{orderId}
+		
+	</select>
+	
+
+	
+	<sql id="OrderColumns">
+		id,username,order_id,address,price,time,phone,loginname,isfa,isshou,express_id,company
+	</sql>
+
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="Order" id="OrderMap">
+		<id property="id" column="id" />
+		<result property="orderId" column="order_id" />
+		<result property="address" column="address" />
+		<result property="username" column="username" />
+		<result property="price" column="price" />
+		<result property="time" column="time" />
+		<result property="phone" column="phone" />
+		<result property="loginname" column="loginname" />
+		<result property="isfa" column="isfa" />
+		<result property="isshou" column="isshou" />
+		<result property="expressId" column="express_id" />
+		<result property="company" column="company" />
+		<collection property="orderDetails" column="order_id" select="com.zhq.dao.backstage.OrderBackDao.findOrderDetails"></collection>
+	</resultMap>
+	
+	<!-- 根据订单号查订单商品信息 -->
+	<select id="findAllOrder" resultMap="OrderMap" parameterType="Order">
+		select 
+		<include refid="OrderColumns" />
+		from t_order_shop 
+		<where>
+			
+			<!-- <if test="productID != null and productID !=''">
+				and product_id = #{productID}
+			</if>
+			<if test="comname != null and comname !=''">
+				拼出%%形式
+				<bind name="likename" value="'%'+comname+'%'" />
+				and comname like #{likename}
+			</if> -->
+			
+		</where>
+		
+	</select>
+	
+	<!-- 根据订单号修改信息 -->
+	<update id="updateOrder" parameterType="Integer">
+		update t_order_shop
+		<set>
+			username = #{username},
+			address = #{address},
+			price =#{price},
+			time = #{time},
+			phone = #{phone},
+			isfa = #{isfa},
+			isshou = #{isshou},
+			express_id = #{expressId},
+			company = #{company}
+		</set>
+		<where>
+			order_id = #{orderId}
+		</where>
+	</update>
+	
+
+	
+</mapper>
